@@ -1,0 +1,38 @@
+#!/bin/sh
+
+# real path to vim
+VIM_CMD=${VIM_CMD:-/usr/bin/vim}
+GVIM_CMD=${GVIM_CMD:-/usr/bin/gvim}
+
+# what program name was i run as?
+argv0=`basename $0`
+
+# turn off software flow control so <C-s> and <C-q> will work. you can add
+# extra stty settings by setting $VIM_STTY (i use 'erase ^?' here)
+[ -t 0 ] && stty -ixon -ixoff $VIM_STTY
+
+case "$argv0" in
+  g*)
+    VIM_CMD="$GVIM_CMD"
+    ;;
+esac
+
+case "$argv0" in
+  *diff)
+    VIM_CMD="${VIM_CMD}diff"
+    ;;
+esac
+
+case "$argv0" in
+  # This case has to come before vim
+  *vm*|*vimacs*)
+    exec $VIM_CMD --cmd "let g:VM_Enabled = 1" \
+		  --cmd "set insertmode" \
+		        "$@"
+    ;;
+  *vim*)
+    exec $VIM_CMD --cmd "let g:VM_Enabled = 1" \
+                        "$@"
+    ;;
+esac
+

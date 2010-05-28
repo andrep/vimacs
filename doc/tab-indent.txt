@@ -1,0 +1,143 @@
+*tab-indent.txt*	Tab Indentation for Vim
+
+|TabIndent.01|		Introduction
+|TabIndent.02|		Usage
+|TabIndent.03|		Options
+|TabIndent.04|		Revision History (ChangeLog)
+|TabIndent.05|		Contact, Help, Credits
+
+
+==============================================================================
+*TabIndent.01*  Introduction
+
+The TabIndent plugin allows you use the <Tab> key in Insert mode to indent the
+current line, as well as retain its usual task of inserting a real <Tab>
+character.  TabIndent exhibits a bit of intelligence by making sure that the
+current line is only indented if you're editing source code, by checking the
+'cindent' and 'indentexpr' options.  Editing text files will never cause the
+<Tab> key to perform indentation.
+
+You can also change the behaviour of when indentation is performed; some
+people prefer <Tab> to always perform indentation, and others may want to
+indent only if the cursor is at the start of the line.  TabIndent is designed
+to make every user work the way they want to.
+
+
+==============================================================================
+*TabIndent.02*  Usage
+
+To install the TabIndent plugin, put the tab-indent.vim file into the plugin
+subdirectory, contained in one of the directories in your 'runtimepath'.
+(Such as /usr/share/vim/vimfiles/ on UNIX, or "C:\Vim\vimfiles" on Win32).
+You'll need Vim 6.0 or above.
+
+Once the TabIndent plugin is installed, simply press the <Tab> key in Insert
+mode to indent the line.  <Tab> will perform an indent if the current buffer
+has the 'cindent' or 'indentexpr' options set, otherwise it will act as if you
+had pressed <Tab> normally.  (Whether it inserts a real, physical <Tab> is
+dependent upon other options such as 'softtabstop'; the TabIndent plugin
+doesn't touch these options).
+
+To install the TabIndent documentation, copy this textfile (tab-indent.txt) to
+the "doc" directory in your 'runtimepath'.  (e.g. "$HOME/.vim/doc" on UNIX),
+then run the |helptags| command on that directory from inside Vim.  (e.g.
+":helptags ~/.vim/doc").  See |add-local-help| for details.
+
+
+==============================================================================
+*TabIndent.03*  Options
+
+TabIndent can change its behaviour to your liking by setting variables in your
+Vim startup file ("$HOME/.vimrc" in Unix; "C:\Vim\_vimrc" in Windows; see
+|.vimrc| for more information).  You can set variables using |:let| command,
+e.g.
+>
+	let g:TabIndentStyle = "emacs"
+<
+
+						*TabIndent-option-list*
+
+						*'g:TabIndentStyle'*
+
+'g:TabIndentStyle'		number or string (default "emacs")
+
+	Changes the behaviour of the <Tab> key if the TabIndent plugin is
+	loaded.  No matter what you set this variable to, indentation will
+	only occur if either the 'cindent' or 'indentexpr' option is set for
+	the current buffer.  If both those options are not set, pressing <Tab>
+	will always act as if you pressed the <Tab> key without the plugin
+	loaded.
+
+	setting			behaviour ~
+	
+	"0" or "never"		<Tab> always inserts a real tab
+	
+	"1" or "emacs"		<Tab> always indents
+	    or "always"
+	
+	"2" or "whitespace"	<Tab> will indent if the cursor is in
+				whitespace (space or tab character) at
+				the start of the line
+
+	"3" or "startofline"	<Tab> will indent if the cursor is in
+				whitespace (space or tab character) at
+				the start of the line, or at the very
+				start of the line
+	
+
+==============================================================================
+*TabIndent.04*  Revision History (ChangeLog)
+
+						*TabIndent-history*
+
+I originally had the tab-or-indent functionality in Vimacs, a completely
+separate plugin for Vim; the actual idea is borrowed from c-mode in (X)Emacs.
+It was pointed out to me that I should make the behaviour of the <Tab> key
+customisable; it was at that point that I decided to make it a completely
+separate plugin.  Since I couldn't find any comparable script on the Vim
+Online website which did this, I decided to make it a real Vim plugin and
+release it to the world.
+
+						*TabIndent-changelog*
+
+						*TabIndent-1.0*
+
+Initial release.
+
+
+==============================================================================
+*TabIndent.05*  Contact, Help, Credits
+
+				*TabIndent-help* *TabIndent-author*
+
+The author of the TabIndent plugin is Andre Pang <ozone@vimacs.cx>.
+
+Just email me directly if you have any queries about the plugin.  I don't bite
+:).
+
+						*TabIndent-webpage*
+
+There isn't a webpage for the plugin at the moment.  You can always find the
+latest version at the Vim Online website, at http://vim.sourceforge.net/.
+TabIndent also comes bundled with Vimacs, which is locate at
+http://www.vimacs.cx/.
+
+						*TabIndent-thanks*
+
+TabIndent wouldn't be as useful as it is without the help of the following
+people (whether they realise it or not ;):
+
+  Charles E. Campbell ~
+  For writing an excellent document on how to write "proper" Vim plugins.
+
+  Michelle Wibisono ~
+  For making me realise that the tab-or-indent functionality in Vimacs
+  should be made customisable, and put into its own Vim plugin.  Yay
+  modularity!
+
+Thanks!
+
+
+==============================================================================
+ vim:tw=78:sts=0:ts=8:fo=tcq2:isk=!-~,^*,^\|,^\":ts=8:ft=help:norl:
+

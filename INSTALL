@@ -1,0 +1,55 @@
+						*vimacs-unix-quickstart*
+
+Firstly, you'll need Vim 6 installed.  Vimacs won't work on older
+versions.  So, make sure you're running Vim 6:
+>
+	vim --version | head -1
+<
+The reply you get should say "VIM - Vi IMproved 6.0" (or higher).
+
+To install Vimacs, execute the following commands in your shell:
+>
+	mkdir -p $HOME/.vim/doc
+	mkdir -p $HOME/.vim/plugin
+	cp -R doc plugin $HOME/.vim
+<
+Run the following command in a shell to make Vim rescan your documentation
+directory:
+>
+	vim --cmd "helptags $HOME/.vim/doc" --cmd "q"
+<
+That's it.  If you're a Vim user, Emacs key mappings will now be enabled
+whenever you're in Vim's Insert mode.  If you're an Emacs user and have
+never used Vim before, you probably want to always keep Vim in Insert
+Mode, and use Select mode rather than Visual mode:
+>
+	echo 'set insertmode' >> $HOME/.vimrc
+	echo 'set selectmode += cmd' >> $HOME/.vimrc
+<
+Vimacs is now completely installed.  However ...
+
+If you want to have a more sophisticated setup, where you can type a
+different command (such as 'vimacs') to always start in Insert mode, but
+typing 'vim' starts Vim in Normal mode, read on.
+
+Put the shell script located at plugin/vimacs/vim somewhere in your $PATH,
+and symlink it to the appropriate files.  Change the $myscriptdir variable
+below to whatever directory you use for scripts; if you don't currently
+have one, you'll need to mkdir the directory and add it to your $PATH.
+(Consult your local Unix expert on adding directories to your $PATH if you
+don't know how to do this.)
+>
+	myscriptdir=$HOME/bin
+	mkdir -p $myscriptdir
+	cp plugin/vimacs/vim $myscriptdir
+	chmod 755 $myscriptdir/vim
+	ln -s $myscriptdir/vim $myscriptdir/gvim
+	ln -s $myscriptdir/vim $myscriptdir/vm
+	ln -s $myscriptdir/vim $myscriptdir/gvm
+	ln -s $myscriptdir/vim $myscriptdir/vimacs
+	ln -s $myscriptdir/vim $myscriptdir/gvimacs
+	myscriptdir=
+<
+For more detailed installation instructions, see |vimacs-installation| in
+the Vimacs help file.
+
