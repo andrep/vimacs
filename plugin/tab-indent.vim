@@ -15,8 +15,15 @@ if exists("loaded_TabIndent")
   finish
 endif
 
-if !exists("g:TabIndentStyle")
-  let g:TabIndentStyle = 1
+" Load Vimacs tab-indent?
+if v:progname =~ '^vi$'
+  " Never load Vimacs if user wants true Vi!  (We're not _that_ evil 8)
+  finish
+elseif v:progname =~ 'vimacs' || v:progname =~ 'vemacs' || v:progname =~ 'vm'
+  let g:TabIndentStyle = "emacs"
+elseif !exists("g:TabIndentStyle") || g:TabIndentStyle == 0
+  " A user should explicitly enable tab-indent style
+  finish
 endif
 
 inoremap <silent> <Tab> <C-r>=<SID>TabOrIndent()<CR>
