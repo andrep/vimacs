@@ -516,6 +516,128 @@ cnoremap <C-k> <C-f>d$<C-c><End>
 " Navigation
 "
 
+function! <SID>ForwardWord()
+  if col('.')>1 || line('.')>1
+    return "normal! hel"
+  else
+    return "normal! el"
+  endif
+endfunction
+
+inoremap <silent> <SID>ForwardWord <C-o>:call <SID>SetVirtualedit()<CR>
+  \<C-o>:execute <SID>ForwardWord()<CR>
+  \<C-o>:call <SID>RestoreVirtualedit()<CR>
+
+onoremap <silent> <SID>OForwardWord :call <SID>SetVirtualedit()<Bar>
+  \execute <SID>ForwardWord()<Bar>
+  \call <SID>RestoreVirtualedit()<CR>
+
+" Weird.  In Vim 7, if insertmode is on, if you exit visual mode in a mapping,
+" things get weird unless you do some normal command, even a no-op
+nmap <SID>Nop <Nop>
+function! <SID>ExitVisual()
+  if ! &insertmode
+    startinsert
+  else
+    normal! <SID>Nop
+  endif
+endfunction
+
+function <SID>VForwardWord1()
+  if col('.')>=col('$')
+    let s:vforward_fix = 1
+  else
+    let s:vforward_fix = 0
+  endif
+endfunction
+
+function <SID>VForwardWord2()
+  if s:vforward_fix
+    return "\<C-o>gv``\<Right>"
+  else
+    return "\<C-o>gv``"
+  endif
+endfunction
+
+function <SID>AdjustVisualModeExitPosition(backwards)
+  if line('.')==line("'>") && col('.')+1 == col("'>")
+    if !a:backwards || line('.')!=line("'<") || col('.') != col("'<")
+      return "\<Right>"
+    endif
+  elseif line('.')==line("'<") && col('.')+1 == col("'<")
+    return "\<Right>"
+  endif
+  return ""
+endfunction
+
+if version >= 700
+  vnoremap <silent> <SID>VForwardWord <C-c>
+    \:call <SID>ExitVisual()<CR>
+    \<C-r>=<SID>AdjustVisualModeExitPosition(0)<CR>
+    \<C-o>:call <SID>SetVirtualedit()<CR>
+    \<C-o>:execute <SID>ForwardWord()<CR>
+    \<C-o>:call <SID>VForwardWord1()<CR>
+    \<C-o>m`
+    \<C-o>:call <SID>RestoreVirtualedit()<CR>
+    \<C-r>=<SID>VForwardWord2()<CR>
+else
+  vnoremap <silent> <SID>VForwardWord <C-c>
+    \i
+    \<C-r>=<SID>AdjustVisualModeExitPosition(0)<CR>
+    \<C-o>:call <SID>SetVirtualedit()<CR>
+    \<C-o>:execute <SID>ForwardWord()<CR>
+    \<C-o>:call <SID>VForwardWord1()<CR>
+    \<C-o>m`
+    \<C-o>:call <SID>RestoreVirtualedit()<CR>
+    \<C-r>=<SID>VForwardWord2()<CR>
+endif
+
+function! <SID>BackwardWord()
+  let l:line = line('.')
+  let l:getline = getline(l:line)
+  if col('.')==1 || strpart(l:getline,0,col('.')-1) =~ '^\s*$'
+    let l:count = l:line-1 - prevnonblank(l:line-1)
+    if l:count > 0
+      return "normal! " . l:count . "kb"
+    endif
+  endif
+  if col('.')>=col('$') && line('.')<line('$')
+    return "normal! lb"
+  else
+    return "normal! b"
+  endif
+endfunction
+
+inoremap <silent> <SID>BackwardWord <C-o>:call <SID>SetVirtualedit()<CR>
+  \<C-o>:execute <SID>BackwardWord()<CR>
+  \<C-o>:call <SID>RestoreVirtualedit()<CR>
+
+onoremap <silent> <SID>OBackwardWord :call <SID>SetVirtualedit()<Bar>
+  \execute <SID>BackwardWord()<Bar>
+  \call <SID>RestoreVirtualedit()<CR>
+
+if version >= 700
+  vnoremap <silent> <SID>VBackwardWord <C-c>
+    \:call <SID>ExitVisual()<CR>
+    \<C-r>=<SID>AdjustVisualModeExitPosition(1)<CR>
+    \<C-o>:call <SID>SetVirtualedit()<CR>
+    \<C-o>:execute <SID>BackwardWord()<CR>
+    \<C-o>m`
+    \<C-o>:call <SID>RestoreVirtualedit()<CR>
+    \<C-o>gv
+    \``
+else
+  vnoremap <silent> <SID>VBackwardWord <C-c>
+    \i
+    \<C-r>=<SID>AdjustVisualModeExitPosition(1)<CR>
+    \<C-o>:call <SID>SetVirtualedit()<CR>
+    \<C-o>:execute <SID>BackwardWord()<CR>
+    \<C-o>m`
+    \<C-o>:call <SID>RestoreVirtualedit()<CR>
+    \<C-o>gv
+    \``
+endif
+
 " Insert/Visual/Operator mode maps
 imap <C-b> <Left>
 vmap <C-b> <Left>
@@ -529,12 +651,12 @@ omap <C-p> <Up>
 imap <C-n> <Down>
 vmap <C-n> <Down>
 omap <C-n> <Down>
-inoremap <M-f> <C-o>e<Right>
-vnoremap <M-f> e<Right>
-onoremap <M-f> e<Right>
-inoremap <M-b> <C-Left>
-vnoremap <M-b> <C-Left>
-onoremap <M-b> <C-Left>
+inoremap <script> <M-f> <SID>ForwardWord
+vnoremap <script> <M-f> <SID>VForwardWord
+onoremap <script> <M-f> <SID>OForwardWord
+inoremap <script> <M-b> <SID>BackwardWord
+vnoremap <script> <M-b> <SID>VBackwardWord
+onoremap <script> <M-b> <SID>OBackwardWord
 imap <C-a> <Home>
 vmap <C-a> <Home>
 omap <C-a> <Home>
@@ -571,14 +693,23 @@ onoremap <C-x>= <C-g>
 inoremap <silent> <M-g> <C-o>:call <SID>GotoLine()<CR>
 vnoremap <silent> <M-g> :<C-u>call <SID>GotoLine()<CR>
 onoremap <silent> <M-g> :call <SID>GotoLine()<CR>
+inoremap <silent> <C-x>g <C-o>:call <SID>GotoLine()<CR>
+vnoremap <silent> <C-x>g :<C-u>call <SID>GotoLine()<CR>
+onoremap <silent> <C-x>g :call <SID>GotoLine()<CR>
 " Phear, <M-g> works properly even in Visual/Operator-Pending
 " modes :)  (It's rather dangerous with the latter, though ...)
-inoremap <M-Left> <S-Left>
-vnoremap <M-Left> <S-Left>
-onoremap <M-Left> <S-Left>
-inoremap <M-Right> <S-Right>
-vnoremap <M-Right> <S-Right>
-onoremap <M-Right> <S-Right>
+inoremap <script> <M-Left> <SID>BackwardWord
+vnoremap <script> <M-Left> <SID>VBackwardWord
+onoremap <script> <M-Left> <SID>OBackwardWord
+inoremap <script> <M-Right> <SID>ForwardWord
+vnoremap <script> <M-Right> <SID>VForwardWord
+onoremap <script> <M-Right> <SID>OForwardWord
+inoremap <script> <C-Left> <SID>BackwardWord
+vnoremap <script> <C-Left> <SID>VBackwardWord
+onoremap <script> <C-Left> <SID>OBackwardWord
+inoremap <script> <C-Right> <SID>ForwardWord
+vnoremap <script> <C-Right> <SID>VForwardWord
+onoremap <script> <C-Right> <SID>OForwardWord
 inoremap <C-Up> <C-o>{
 vnoremap <C-Up> {
 onoremap <C-Up> {
