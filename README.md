@@ -2,7 +2,7 @@ What is Vimacs?
 ===============
 
 * Conrad Parker: "Dude, I gotta get you doing some serious hacking projects."
-* Erik de Castro Lopo: "Oh, so you¬øre the insane guy that K was talking about."
+* Erik de Castro Lopo: "Oh, so you're the insane guy that K was talking about."
 * Wichert Akkerman: "Gross. Horror. Vim abuse. Mind if I include this as an example in the Debian vim packages? :)"
 * Henry Gebhardt: "Vimacs, as ridiculously as it sounds, is a great idea."
 
