@@ -864,6 +864,13 @@ function! <SID>BufExplorerOrBufferList()
   endif
 endfunction
 
+"" Integration with a.vim (Alternate File) plugin
+if exists("*AlternateFile")
+  inoremap <C-x><C-a> <C-o>:A<CR>
+  inoremap <C-x>a <C-o>:A<CR>
+  inoremap <C-x>b <C-r>=<SID>BufExplorerOrBufferList()<CR>
+endif
+
 
 "
 " Marks (a.k.a. "Registers" in Emacs)
