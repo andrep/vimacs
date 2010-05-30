@@ -1039,26 +1039,25 @@ vnoremap <M-x> :
 
 " Pasting
 inoremap <silent> <C-y> <C-o>:call <SID>ResetKillRing()<CR><C-r><C-o>"
-inoremap <S-Ins> <C-r><C-o>+
-"inoremap <M-y> <C-o>:echoerr "Sorry, yank-pop is not yet implemented!"<CR>
-inoremap <M-y> <C-o>:call <SID>YankPop()<CR>
+inoremap <S-Ins> <C-r><C-o>*
+inoremap <M-y> <C-r>=<SID>YankPop()<CR>
 
 function! <SID>YankPop()
   undo
   if !exists("s:kill_ring_position")
     call <SID>ResetKillRing()
   endif
-  execute "normal! i\<C-r>\<C-o>" . s:kill_ring_position . "\<Esc>"
   call <SID>IncrKillRing()
+  return "\<C-r>\<C-o>" . s:kill_ring_position
 endfunction
 
 function! <SID>ResetKillRing()
-  let s:kill_ring_position = 3
+  let s:kill_ring_position = 1
 endfunction
 
 function! <SID>IncrKillRing()
   if s:kill_ring_position >= 9
-    let s:kill_ring_position = 2
+    let s:kill_ring_position = 1
   else
     let s:kill_ring_position = s:kill_ring_position + 1
   endif
@@ -1184,7 +1183,7 @@ function! <SID>DeleteBlankLines()
   if getline(".") == "" || getline(". + 1") == "" || getline(". - 1") == ""
     ?^.\+$?+1,/^.\+$/-2d"_"
   endif
-  normal j
+  normal! j
 endfunction
 
 
