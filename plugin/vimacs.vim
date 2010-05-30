@@ -117,6 +117,21 @@ endfun
 
 
 "
+" set virtualedit=all (or onemore in Vim 7) is necessary
+" for consistent word movement
+"
+
+function! <SID>SetVirtualedit()
+  let s:saved_virtualedit = &virtualedit
+  set virtualedit=all
+endfunction
+
+function! <SID>RestoreVirtualedit()
+  let &virtualedit = s:saved_virtualedit
+endfunction
+
+
+"
 " It's a good idea to have a command height of at least 2 if showmode is on,
 " because many important messages will be overwritten by the mode display.
 " e.g. <C-x><C-s>, which saves the file, will display that the file has been
