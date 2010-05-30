@@ -593,7 +593,6 @@ command! GotoLine :call <SID>GotoLine()
 " General Editing
 "
 
-inoremap <C-c> <Space><Left>
 inoremap <C-u> <C-o>d0
 inoremap <C-q> <C-v>
 inoremap <C-^> <C-y>
