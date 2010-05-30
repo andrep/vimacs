@@ -799,6 +799,7 @@ command! ScrollOtherWindow silent! execute "normal! \<C-w>w\<PageDown>\<C-w>W"
 " Formatting
 "
 
+inoremap <silent> <M-=> <C-o>:call <SID>IndentParagraph()<CR>
 inoremap <silent> <M-q> <C-o>:call <SID>FillParagraph()<CR>
 inoremap <script> <C-o> <CR><Left>
 inoremap <C-M-o> <C-o>:echoerr "<C-M-o> not supported yet; sorry!"<CR>
@@ -813,6 +814,12 @@ command! FillParagraph :call <SID>FillParagraph()
 function! <SID>FillParagraph()
   let old_cursor_pos = <SID>Mark()
   normal! gqip
+  execute old_cursor_pos
+endfunction
+
+function! <SID>IndentParagraph()
+  let old_cursor_pos = <SID>Mark()
+  normal! =ip
   execute old_cursor_pos
 endfunction
 
