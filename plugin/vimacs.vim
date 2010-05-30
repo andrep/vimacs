@@ -1084,7 +1084,7 @@ endfunction
 
 function! <SID>StartVisualMode()
   call <SID>StartMarkSel()
-  if col('.') > strlen(getline('.'))
+  if col('.') >= col('$') && line('.') < line('$')
     " At EOL
     return "\<Right>\<C-o>v\<Left>"
   else
