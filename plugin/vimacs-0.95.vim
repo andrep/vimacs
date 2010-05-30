@@ -45,11 +45,20 @@
 
 " Have <unique> for all maps?
 
-
-" Never load Vimacs if user wants true Vi!  (We're not _that_ evil 8)
+" Load Vimacs?
 if v:progname =~ '^vi$'
+  " Never load Vimacs if user wants true Vi!  (We're not _that_ evil 8)
+  finish
+elseif v:progname =~ 'vimacs'
+  let g:VM_Enabled = 1
+elseif v:progname =~ 'vemacs' || v:progname == 'vm'
+  let g:VM_Enabled = 1
+  set insertmode
+elseif !exists("g:VM_Enabled") || g:VM_Enabled == 0
+  " A vim user should explicitly enable Vimacs
   finish
 endif
+
 
 if version < 600
   " We require Vim 6 to work :(
