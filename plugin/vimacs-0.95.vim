@@ -761,11 +761,11 @@ inoremap <C-x>2 <C-o><C-w>s
 inoremap <C-x>3 <C-o><C-w>v
 inoremap <C-x>0 <C-o><C-w>c
 inoremap <C-x>1 <C-o><C-w>o
-inoremap <C-x>o <C-o><C-w>w
+inoremap <silent> <C-x>o <Esc><C-w>w:if &insertmode \| startinsert \| endif \| redraw<CR>
 " <C-x>O is not defined in Emacs ...
 inoremap <C-x>O <C-o><C-w>W
-inoremap <C-Tab> <C-o><C-w>w
-inoremap <C-S-Tab> <C-o><C-w>W
+inoremap <silent> <C-Tab> <Esc><C-w>w:if &insertmode \| startinsert \| endif \| redraw<CR>
+inoremap <silent> <C-S-Tab> <Esc><C-w>W:if &insertmode \| startinsert \| endif \| redraw<CR>
 inoremap <C-x>+ <C-o><C-w>=
 inoremap <silent> <C-M-v> <C-o>:ScrollOtherWindow<CR>
 
