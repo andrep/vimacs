@@ -410,19 +410,38 @@ function! <SID>AbortSearch()
 endfunction
 
 function! <SID>SearchAgain()
-  if (winline() <= 2)
-    normal zb
-  elseif (( winheight(0) - winline() ) <= 2)
-    normal zt
+  
+  "if (winline() <= 2)
+  "  normal zb
+  "elseif (( winheight(0) - winline() ) <= 2)
+  "  normal zt
+  "endif
+
+  let current_pos = <SID>Mark()
+  if search(@/, 'W') == 0
+    " FIXME
+    set wrapscan
+    if s:hit_boundary == 1
+      let s:hit_boundary = 2
+    endif
+    let s:hit_boundary = 1
+  else
+    if s:hit_boundary == 2
+      let s:hit_boundary = 0
+    endif
+    execute current_pos
   endif
+  
   cnoremap <C-s> <CR><C-o>:call <SID>SearchAgain()<CR><C-o>/<Up>
   cnoremap <C-r> <CR><C-o>:call <SID>SearchAgain()<CR><C-o>?<Up>
+  
   if g:VM_SearchRepeatHighlight == 1
     if !exists("s:hls_status")
       let s:hls_status = &hls
     endif
     set hls
   endif
+
 endfunction
 
 " Emacs' `query-replace' functions
