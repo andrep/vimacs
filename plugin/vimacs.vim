@@ -244,6 +244,14 @@ endif
 " One or two <Esc>s to get back to Normal mode?
 "
 
+function! <SID>NormalModeKey()
+  if &insertmode
+    return "\<C-l>"
+  else
+    return "\<Esc>"
+  endif
+endfunction
+
 " on CmdwinLeave?
 if g:VM_SingleEscToNormal == 1
   if &insertmode
@@ -258,8 +266,14 @@ if g:VM_SingleEscToNormal == 1
   set ttimeout
   set timeoutlen=50
 else
-  inoremap <Esc><Esc> <C-l>
+  inoremap <Esc><Esc> <C-r>=<SID>NormalModeKey()<CR>
   vnoremap <Esc><Esc> <Esc>
+  " for some reason, double <Esc> in Select mode wasn't working
+  " until I added a second explicit select-mode map...?
+  if version >= 700
+    snoremap <Esc><Esc> <Esc>
+  endif
+  nnoremap <Esc><Esc> <Esc>
   set notimeout
   set nottimeout
 endif
@@ -273,13 +287,12 @@ command! UseF1ForNormal echoerr "Use F1 or <C-z> to return to Normal mode.  :hel
 
 inoremap <M-x> <C-o>:
 inoremap <M-:> <C-o>:
-inoremap <F1> <C-l>
+inoremap <F1> <C-r>=<SID>NormalModeKey()<CR>
 inoremap <F2> <C-o>
 inoremap <M-`> <C-o>
-inoremap <silent> <C-z> <C-l>:echo "Returning to Normal mode; press <C-z> again to suspend Vimacs"<CR>
+inoremap <silent> <C-z> <C-r>=<SID>NormalModeKey()<CR>:echo "Returning to Normal mode; press <C-z> again to suspend Vimacs"<CR>
 nnoremap <C-z> :call <SID>Suspend()<CR>
 " M-` isn't defined in Emacs
-inoremap <C-c> <C-l>
 
 inoremap <M-1> <C-o>1
 inoremap <M-2> <C-o>2
