@@ -1,5 +1,5 @@
 """
-"" Vimacs (0.95)
+"" Vimacs (0.96)
 "
 " Vim-Improved eMACS
 "
