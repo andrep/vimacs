@@ -364,6 +364,8 @@ LetDefault g:VM_SearchRepeatHighlight 0
 function! <SID>StartSearch(search_dir)
   let s:incsearch_status = &incsearch
   let s:lazyredraw_status = &lazyredraw
+  let s:hit_boundary = 0
+  set nowrapscan
   set incsearch
   set lazyredraw
   cmap <C-c> <CR>
