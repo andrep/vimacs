@@ -682,7 +682,7 @@ vnoremap <M-x> :
 
 " Pasting
 inoremap <silent> <C-y> <C-o>:call <SID>ResetKillRing()<CR><C-r><C-o>"
-inoremap <S-Ins> <C-r><C-o>*
+inoremap <S-Ins> <C-r><C-o>+
 "inoremap <M-y> <C-o>:echoerr "Sorry, yank-pop is not yet implemented!"<CR>
 inoremap <M-y> <C-o>:call <SID>YankPop()<CR>
 
