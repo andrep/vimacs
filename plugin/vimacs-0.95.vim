@@ -90,7 +90,7 @@ command! -nargs=+ LetDefault call s:LetDefault(<f-args>)
 " Developers may want to turn this on, to always load the file
 LetDefault g:VM_Dev 0
 
-if g:VM_Enabled == 0 || (exists("loaded_vimacs") && g:VM_Dev == 0) || &cp
+if (exists("loaded_vimacs") && g:VM_Dev == 0) || &cp
   finish
 endif
 
