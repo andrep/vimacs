@@ -264,6 +264,7 @@ inoremap <M-`> <C-o>
 inoremap <silent> <C-z> <C-l>:echo "Returning to Normal mode; press <C-z> again to suspend Vimacs"<CR>
 nnoremap <C-z> :call <SID>Suspend()<CR>
 " M-` isn't defined in Emacs
+inoremap <C-c> <C-l>
 
 inoremap <M-1> <C-o>1
 inoremap <M-2> <C-o>2
