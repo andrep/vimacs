@@ -964,6 +964,25 @@ inoremap <C-l> <C-o>zz<C-o><C-l>
 
 
 "
+" Folding
+"
+
+" I've changed the folding prefix <C-x>@to <C-x><C-x>, because <C-x>@ sucks
+" <C-x><C-x><C-r> does the folding operation recursively
+inoremap <C-x><C-x><C-w> <C-o>zM
+inoremap <C-x><C-x><C-x> <C-o>zc
+inoremap <C-x><C-x><C-r><C-x> <C-o>zC
+inoremap <C-x><C-x><C-s> <C-o>zo
+inoremap <C-x><C-x><C-r><C-s> <C-o>zO
+inoremap <C-x><C-x>s <C-o>zR
+inoremap <C-x><C-x>1s <C-o>zr
+inoremap <C-x><C-x><C-q> <C-o>za
+inoremap <C-x><C-x><C-r><C-q> <C-o>zA
+inoremap <C-x><C-x>q <C-o>zM
+inoremap <C-x><C-x>1q <C-o>zm
+
+
+"
 " Enable menus in the console (like GNU Emacs)
 " Thanks to Piet Delport for this great idea!
 " 
