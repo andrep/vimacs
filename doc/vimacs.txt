@@ -777,6 +777,13 @@ See the |'vimacs-cedit'| topic in the option summary for details.
 
 						*vimacs-changelog*
 
+						*vimacs-0.96*
+
+Added "set nocp" note to INSTALL_unix file
+
+Fixed some mark commands (e.g. <M-Space>) so that don't splurge out confusing
+messages to the screen
+
 						*vimacs-0.95*
 
 Fixed up 'duplicate tag "vimacs" in file vimacs.txt' when running helptags;
