@@ -662,16 +662,16 @@ vnoremap <C-x><C-Space> <Esc>
 vnoremap <C-g> <Esc>
 vnoremap <C-x><C-@> <Esc>
 vnoremap <M-w> "1y
-vnoremap <C-Ins> "*y
-vnoremap <S-Del> "*d
+vnoremap <C-Ins> "+y
+vnoremap <S-Del> "+d
 "May have to change to "1d and paste ...
 
 " Marking blocks
-inoremap <M-Space> <C-o>:call <SID>StartMarkSel()<CR><C-o>viw
-inoremap <M-h> <C-o>:call <SID>StartMarkSel()<CR><C-o>vap
-inoremap <C-<> <C-o>:call <SID>StartMarkSel()<CR><C-o>v1G0o
-inoremap <C->> <C-o>:call <SID>StartMarkSel()<CR><C-o>vG$o
-inoremap <C-x>h <C-o>:call <SID>StartMarkSel()<CR><Esc>1G0vGo
+inoremap <silent> <M-Space> <C-o>:call <SID>StartMarkSel()<CR><C-o>viw
+inoremap <silent> <M-h> <C-o>:call <SID>StartMarkSel()<CR><C-o>vap
+inoremap <silent> <C-<> <C-o>:call <SID>StartMarkSel()<CR><C-o>v1G0o
+inoremap <silent> <C->> <C-o>:call <SID>StartMarkSel()<CR><C-o>vG$o
+inoremap <silent> <C-x>h <C-o>:call <SID>StartMarkSel()<CR><Esc>1G0vGo
 
 " Block operations
 vnoremap <C-w> "1d
