@@ -754,36 +754,246 @@ onoremap <C-g> <C-c>
 "
 
 inoremap <C-d> <Del>
-inoremap <silent> <M-d> <C-r>=<SID>KillWord()<CR>
-inoremap <M-> <C-w>
-inoremap <M-BS> <C-w>
-inoremap <C-BS> <C-w>
-inoremap <silent> <C-k> <C-r>=<SID>KillLine()<CR>
-" Thanks to Benji Fisher for helping me with getting <C-k> to work!
-inoremap <M-0><C-k> <C-o>d0
-inoremap <M-k> <C-o>d)
-inoremap <C-x><BS> <C-o>d(
-inoremap <M-z> <C-o>dt
-inoremap <M-\> <Esc>beldwi
 
-function! <SID>KillWord()
-  if col('.') > strlen(getline('.'))
-    return "\<Del>\<C-o>dw"
+inoremap <silent> <M-d> <C-o>:call <SID>StartKill(0)<CR>
+  \<C-o>:call <SID>SetVirtualedit()<CR>
+  \<C-r>=<SID>ForwardKillWord1()<CR>
+  \<Space><C-o>h
+  \<C-o>"zdve
+  \<C-o>:call setreg('z','','ac')<CR>
+  \<C-o>"Zx
+  \<C-o>:let @z = strpart(@z,1)<CR>
+  \<C-r>=<SID>ForwardKillWord2()<CR>
+  \<C-o>:call <SID>RestoreVirtualedit()<CR>
+  \<C-o>:call <SID>CompleteKill()<CR>
+
+function! <SID>ForwardKillWord1()
+  if col('.')>=col('$') && line('.') < line('$')
+    let s:kill_at_eol = 1
+    return "\<Down>\<C-o>0"
   else
-    return "\<C-o>dw"
+    let s:kill_at_eol = 0
+    return ""
   endif
 endfunction
+
+function! <SID>ForwardKillWord2()
+  if s:kill_at_eol
+    let @z = "\n" . @z
+    return "\<BS>"
+  else
+    return ""
+  endif
+endfunction
+
+inoremap <silent> <SID>BackwardKillWord <C-o>:call <SID>StartKill(1)<CR>
+  \<C-o>:call <SID>SetVirtualedit()<CR>
+  \<C-r>=<SID>BackwardKillWord1()<CR>
+  \<C-r>=<SID>BackwardKillWord2()<CR>
+  \<C-r>=<SID>BackwardKillWord3()<CR>
+  \<C-o>"wdb
+  \<C-o>:call <SID>BackwardKillWord4()<CR>
+  \<C-o>:call <SID>RestoreVirtualedit()<CR>
+  \<C-o>:call <SID>CompleteKill()<CR>
+inoremap <silent> <script> <M-> <SID>BackwardKillWord
+inoremap <silent> <script> <M-BS> <SID>BackwardKillWord
+inoremap <silent> <script> <C-BS> <SID>BackwardKillWord
+
+" A single <C-r>= which does two <C-o> commands doesn't work... why?
+function! <SID>BackwardKillWord1()
+  let s:saved_w = @w
+  let s:saved_x = @x
+  let s:saved_y = @y
+  let @w = ""
+  let @x = ""
+  let @y = ""
+  let s:line = line('.')
+  let l:getline = getline(s:line)
+  if strpart(l:getline,0,col('.')-1) =~ '^\s*$'
+    return "\<C-o>\"zd0"
+  else
+    return ""
+  endif
+endfunction
+
+function! <SID>BackwardKillWord2()
+  if col('.') == 1
+    let l:count = s:line-1 - prevnonblank(s:line-1)
+    if l:count > 0
+      return "\<C-o>\"ydv" . l:count . "k"
+    else
+      return ""
+    endif
+  else
+    return ""
+  endif
+endfunction
+
+function! <SID>BackwardKillWord3()
+  if col('.') == 1 && line('.') > 1
+    let @x = "\n"
+    return "\<BS>"
+  else
+    return ""
+  endif
+endfunction
+
+function! <SID>BackwardKillWord4()
+  let @z = @w . @x . @y . @z
+  let @w = s:saved_w
+  let @x = s:saved_x
+  let @y = s:saved_y
+endfunction
+
+inoremap <silent> <C-k> <C-o>:call <SID>StartKill(0)<CR>
+  \<C-r>=<SID>KillLine()<CR>
+  \<C-o>:call <SID>CompleteKill()<CR>
+" Thanks to Benji Fisher for helping me with getting <C-k> to work!
 
 function! <SID>KillLine()
-  if col('.') > strlen(getline('.'))
+  if col('.') >= col('$')
     " At EOL; join with next line
-    return "\<Del>"
+    if line('.') < line('$')
+      let @z = "\n"
+      return "\<Del>"
+    else
+      let @z = ""
+      return ""
+    endif
   else
     " Not at EOL; kill until end of line
-    return "\<C-o>d$"
+    return "\<C-o>\"zd$"
   endif
 endfunction
 
+inoremap <silent> <M-0><C-k> <C-o>:call <SID>StartKill(1)<CR>
+  \<C-o>"zd0
+  \<C-o>:call <SID>CompleteKill()<CR>
+
+" In Vim, unlike Emacs, an empty line, but NOT a blank line, ends a sentence.
+" Not worth fixing.
+inoremap <silent> <M-k> <C-o>:call <SID>StartKill(0)<CR>
+  \<C-o>"zd)
+  \<C-o>:call <SID>CompleteKill()<CR>
+inoremap <silent> <C-x><BS> <C-o>:call <SID>StartKill(1)<CR>
+  \<C-o>"zd(
+  \<C-o>:call <SID>CompleteKill()<CR>
+inoremap <silent> <M-z> <C-o>:call <SID>StartKill(0)<CR>
+  \<C-o>"zdt
+  \<C-o>:call <SID>CompleteKill()<CR>
+
+inoremap <M-\> <Esc>beldwi
+
+function! <SID>StartKill(backwards)
+  let s:backwards = a:backwards
+  let s:saved_z = @z
+  let @z = ""
+  if (version < 700 || s:kill_command == "kel" || s:kill_command == "keml") && b:changedtick == s:saved_changedtick && <SID>GetPos() == s:saved_pos
+    let s:kill_continue = 1
+    let s:killed = @@
+  else
+    let s:kill_continue = 0
+    let s:killed = ""
+  endif
+  let s:r9 = @9
+  let s:r8 = @8
+  let s:r7 = @7
+  let s:r6 = @6
+  let s:r5 = @5
+  let s:r4 = @4
+  let s:r3 = @3
+  let s:r2 = @2
+  let s:r1 = @1
+endfunction
+
+function! <SID>CompleteKill()
+  " Make the kill ring make sense.
+  " Registers must be characterwise.
+  if s:kill_continue == 0
+    call setreg('9',s:r8,'c')
+    call setreg('8',s:r7,'c')
+    call setreg('7',s:r6,'c')
+    call setreg('6',s:r5,'c')
+    call setreg('5',s:r4,'c')
+    call setreg('4',s:r3,'c')
+    call setreg('3',s:r2,'c')
+    call setreg('2',s:r1,'c')
+  else
+    call setreg('9',s:r9,'c')
+    call setreg('8',s:r8,'c')
+    call setreg('7',s:r7,'c')
+    call setreg('6',s:r6,'c')
+    call setreg('5',s:r5,'c')
+    call setreg('4',s:r4,'c')
+    call setreg('3',s:r3,'c')
+    call setreg('2',s:r2,'c')
+  endif
+  if s:backwards
+    let s:killed = @z . s:killed
+  else
+    let s:killed = s:killed . @z
+  endif
+  let @z = s:saved_z
+  call setreg('"',s:killed,'c')
+  call setreg('1',s:killed,'c')
+  let s:kill_command = "k"
+  let s:saved_changedtick = b:changedtick
+  let s:saved_pos = <SID>GetPos()
+endfunction
+
+if version >= 700
+  function <SID>GetPos()
+    return getpos('.')
+  endfunction
+else
+  function <SID>GetPos()
+    return bufnr('') . ':' . line('.') . ':' . col('.') . ':' . virtcol('.')
+  endfunction
+endif
+
+let s:saved_changedtick = 0
+
+if version < 700
+  let s:saved_pos = ""
+endif
+
+if version >= 700
+  let s:kill_command = ""
+  let s:saved_pos = []
+
+  augroup VM_KillGroup
+    autocmd!
+    autocmd CursorMovedI * call <SID>CursorMovedI()
+    autocmd InsertEnter * call <SID>InsertEnter()
+    autocmd InsertLeave * call <SID>InsertLeave()
+  augroup END
+
+  function! <SID>CursorMovedI()
+    if s:kill_command == "ke"
+      let s:kill_command = "kem"
+    else
+      let s:kill_command = ""
+    endif
+  endfunction
+
+  function! <SID>InsertEnter()
+    if s:kill_command == "k"
+      let s:kill_command = "ke"
+    else
+      let s:kill_command = ""
+    endif
+  endfunction
+
+  function! <SID>InsertLeave()
+    if s:kill_command == "ke"
+      let s:kill_command = "kel"
+    elseif s:kill_command == "kem"
+      let s:kill_command = "keml"
+    else
+      let s:kill_command = ""
+    endif
+  endfunction
+endif
 
 "
 " Abbreviations
@@ -824,6 +1034,7 @@ vnoremap <C-w> "1d
 vnoremap <S-Del> "_d
 vnoremap <C-x><C-x> o
 vnoremap <C-x><C-u> U
+vnoremap <C-x><C-l> u
 vnoremap <M-x> :
 
 " Pasting
