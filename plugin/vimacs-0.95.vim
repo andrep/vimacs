@@ -86,8 +86,6 @@ endfunction
 
 command! -nargs=+ LetDefault call s:LetDefault(<f-args>)
 
-" Load Vimacs by default
-LetDefault g:VM_Enabled 1
 
 " Developers may want to turn this on, to always load the file
 LetDefault g:VM_Dev 0
