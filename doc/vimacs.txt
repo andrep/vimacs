@@ -428,6 +428,29 @@ Windows; see |.vimrc| for more information).  You can set variables using
 	than sending the keypress with the 8th bit on.  Most Unix terminals
 	seem to do that these days.
 
+						*'g:VM_Wrap'*
+
+'g:VM_Wrap'	number	(default 2)
+
+	Allow wrapping when the cursor moves. By default all keys are allowed
+	in all modes. Set its value to 1 to allow wrapping only in
+	insert/replace mode, or 0 to retain the vim |'whichwrap'| option.
+
+						*'g:VM_WrapHL'*
+
+'g:VM_WrapHL'	number	(default 1)
+
+	Allow h/l keys to wrap in normal/visual mode. Since it's not
+	recommended in vim, it can be turned off separately. When
+	|'g:VM_Wrap'| is not 2, this option has no effect.
+
+						*'g:VM_Hidden'*
+
+'g:VM_Hidden'	number	(default 1)
+
+	Hide the buffer when editing a new file. This option affects the
+	|'hidden'| option and the bindings of <C-x><C-f> keys etc.
+
 						*vimacs-vim-options*
 
 Vimacs's operation is heavily influenced by a few of Vim's options.  You can
