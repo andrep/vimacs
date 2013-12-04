@@ -48,6 +48,9 @@
 " Load Vimacs?
 if v:progname =~ '^vi$'
   " Never load Vimacs if user wants true Vi!  (We're not _that_ evil 8)
+  if !exists("g:VM_Enabled")
+    let g:VM_Enabled = 0
+  endif
   finish
 elseif v:progname =~ 'vimacs'
   let g:VM_Enabled = 1
@@ -154,9 +157,22 @@ endif
 " Turn off <Alt>/<Meta> pulling down GUI menu
 set winaltkeys=no
 " Emacs normally wraps everything
-set whichwrap=b,s,<,>,h,l,[,],~
+LetDefault g:VM_Wrap 2
+LetDefault g:VM_WrapHL 1
+if g:VM_Wrap==2
+  set whichwrap=b,s,<,>,[,],~
+  if g:VM_WrapHL
+    set whichwrap+=h,l
+  endif
+elseif g:VM_Wrap==1
+  set whichwrap+=[,]
+endif
 " Emacs always has 'hidden buffers'
-set hidden
+" The 'g:VM_Hidden option' also affects bindings of <C-x><C-f> etc
+LetDefault g:VM_Hidden 1
+if g:VM_Hidden
+  set hidden
+endif
 " Backspace in Emacs normally backspaces anything :)
 set backspace=indent,eol,start
 " Want to be able to use <Tab> within our mappings
@@ -329,14 +345,22 @@ inoremap <C-x><C-c> <C-o>:confirm qall<CR>
 " Files & Buffers
 "
 
-inoremap <C-x><C-f> <C-o>:hide edit<Space>
+if g:VM_Hidden
+  inoremap <C-x><C-f> <C-o>:hide edit<Space>
+else
+  inoremap <C-x><C-f> <C-o>:edit<Space>
+endif
 inoremap <C-x><C-s> <C-o>:update<CR>
 inoremap <C-x>s <C-o>:wall<CR>
 inoremap <C-x>i <C-o>:read<Space>
 "what does C-x C-v do?
 inoremap <C-x><C-w> <C-o>:write<Space>
 inoremap <C-x><C-q> <C-o>:set invreadonly<CR>
-inoremap <C-x><C-r> <C-o>:hide view<Space>
+if g:VM_Hidden
+  inoremap <C-x><C-r> <C-o>:hide view<Space>
+else
+  inoremap <C-x><C-r> <C-o>:view<Space>
+endif
 
 
 "
