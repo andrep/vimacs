@@ -35,7 +35,7 @@ If you're an Emacs user, you'll find that Vimacs offers most of the comforts tha
 
 Of course, a major disadvantage of Vim compared to Emacs is that you don't have the enormous number of Emacs add-ons that have been integrated into the editor over the last few decades. However, you may be surprised at how many of those add-ons are incorporated into Vim itself, for speed. For example, dynamic abbreviation, parenthesis highlighting, and C indenting are all built into Vim. Even complex add-ons, such as Emacs' Grand Unified Debugger, have been implemented in Vim via add-on scripts. Vim does offer its own scripting language if you want to extend it, and if that isn't enough, Vim 6.1 supports Perl, Python, Tcl, OLE, and Ruby as scripting languages: far more choices than just LISP!
 
-Ultimately, the differences between the two editors come down to different design goals: Emacs is aimed at being everything for everyone, and Vim is aimed at being a pure text editor. Vimacs opens up Vim to Emacs users (and everyone else) by allowing you to work with it without having to press <Esc> all the time, so you aren't forced to work with Vi's moded editing style. If you've shied away from Vim because of its Vi-style editing, give Vimacs a shot!
+Ultimately, the differences between the two editors come down to different design goals: Emacs is aimed at being everything for everyone, and Vim is aimed at being a pure text editor. Vimacs opens up Vim to Emacs users (and everyone else) by allowing you to work with it without having to press `<Esc>` all the time, so you aren't forced to work with Vi's moded editing style. If you've shied away from Vim because of its Vi-style editing, give Vimacs a shot!
 
 The History of Vimacs
 ---------------------
