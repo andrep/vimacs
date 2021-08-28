@@ -179,8 +179,9 @@ set backspace=indent,eol,start
 " (This has got to be the coolest option name ever, btw)
 set wildcharm=<Tab>
 " Recognise key sequences that start with <Esc> in Insert Mode
-set esckeys
-
+if !has('nvim')
+  set esckeys
+endif
 
 "
 " For the UNIX console -- make <Esc>x == <M-x>
